@@ -9,12 +9,12 @@ API_HASH = os.environ.get("API_HASH", "0abc83883262245c90ca337b7a0375c4")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 SET_INTERVAL = int(os.environ.get("SET_INTERVAL", 60))  # in seconds, default 1 hour
-TARGET_CHAT_ID = os.environ.get("TARGET_CHAT_ID", "-1004384586427")
+TARGET_CHAT_ID = os.environ.get("TARGET_CHAT_ID", "-1004300055009")
 MAIN_CHANNEL = os.environ.get("MAIN_CHANNEL", "-1003705304493") # Change as needed
-LOG_CHANNEL = os.environ.get("LOG_CHANNEL", "-1003928914916")
+LOG_CHANNEL = os.environ.get("LOG_CHANNEL", "-1003826868552")
 MONGO_URL = os.environ.get("MONGO_URL", "")
 MONGO_NAME = os.environ.get("MONGO_NAME", "cluster0")
-OWNER_ID = int(os.environ.get("OWNER_ID", "8876236699"))
+OWNER_ID = int(os.environ.get("OWNER_ID", "8771195193"))
 ADMIN_URL = os.environ.get("ADMIN_URL", "https://t.me/EternalsHelplineBot")
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "ToukaXRobot")
 FSUB_PIC = os.environ.get("FSUB_PIC", "https://files.catbox.moe/bli70r.jpg")
