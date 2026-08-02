@@ -255,9 +255,9 @@ async def __handle_download_internal(client: Client, message, url, status_msg, i
                             bar_str = PROGRESS_BAR.format(
                                 bar=_make_progress_bar(pct),
                                 title=current_episode_title,
-                                speed=primary['speed'],
-                                current=primary['downloaded'],
-                                total=primary['total']
+                                speed=primary.get('speed', '0 MB/s'),
+                                current=primary.get('downloaded', '?'),
+                                total=primary.get('total', '?')
                             )
 
                             # Update LOG_CHANNEL to use exactly the same visual progress
