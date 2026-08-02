@@ -47,9 +47,9 @@ async def handle_settings(client: Client, message):
     mapping_status_icon = "📦 BATCH" if mapping_batch_mode else "📄 SINGLE"
     mapping_toggle_label = "🔄 ᴍᴀᴘᴘɪɴɢ: ꜱɪɴɢʟᴇ" if mapping_batch_mode else "🔄 ᴍᴀᴘᴘɪɴɢ: ʙᴀᴛᴄʜ"
 
-    active_source = await db.get_user_setting(0, "active_source", "animetsu")
-    source_display = "🌐 ANIMETSU" if active_source == "animetsu" else "📺 ANIWATCH"
-    source_toggle_label = "🔄 ꜱᴡɪᴛᴄʜ ᴛᴏ ᴀɴɪᴡᴀᴛᴄʜ" if active_source == "animetsu" else "🔄 ꜱᴡɪᴛᴄʜ ᴛᴏ ᴀɴɪᴍᴇᴛꜱᴜ"
+    active_source = await db.get_user_setting(0, "active_source", "anikoto")
+    source_display = {"anikoto": "🎬 ANIKOTO", "animetsu": "🌐 ANIMETSU"}.get(active_source, "📺 ANIWATCH")
+    source_toggle_label = "🔄 ꜱᴡɪᴛᴄʜ ꜱᴏᴜʀᴄᴇ"
 
     caption = (
         "<blockquote><b>⚙️ ʙᴏᴛ ꜱᴇᴛᴛɪɴɢꜱ</b>\n\n"
@@ -115,7 +115,7 @@ async def handle_ongoing_schedule(client: Client, message):
         caption="<blockquote>📆 <b>ғᴇᴛᴄʜɪɴɢ ᴛᴏᴅᴀʏ'ꜱ ᴀɴɪᴍᴇ ʀᴇʟᴇᴀꜱᴇ ꜱᴄʜᴇᴅᴜʟᴇ...</b></blockquote>",
         parse_mode=ParseMode.HTML
     )
-    active_source = await db.get_user_setting(0, "active_source", "animetsu")
+    active_source = await db.get_user_setting(0, "active_source", "anikoto")
     schedule = await asyncio.to_thread(fetch_schedule_list, source=active_source)
 
     if not schedule:

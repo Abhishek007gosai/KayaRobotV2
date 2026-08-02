@@ -24,8 +24,9 @@ async def handle_url(client: Client, message):
         return await message.reply("<blockquote>❌ <b>ᴏɴʟʏ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴀᴅᴍɪɴɪꜱᴛʀᴀᴛᴏʀꜱ ᴄᴀɴ ꜱᴇᴀʀᴄʜ ᴏʀ ᴅᴏᴡɴʟᴏᴀᴅ ᴀɴɪᴍᴇ.</b>\n\nᴄᴏɴᴛᴀᴄᴛ ᴛʜᴇ ᴏᴡɴᴇʀ ɪғ ʏᴏᴜ ᴛʜɪɴᴋ ᴛʜɪꜱ ɪꜱ ᴀ ᴍɪꜱᴛᴀᴋᴇ.</blockquote>", parse_mode=ParseMode.HTML)
 
     is_animetsu = "animetsu.live" in url.lower() or "animetsu.bz" in url.lower()
+    is_anikoto = "anikoto" in url.lower()
 
-    if "hianime" not in url.lower() and "cantarella" not in url.lower() and "aniwatchtv.to" not in url.lower() and not is_animetsu:
+    if "hianime" not in url.lower() and "cantarella" not in url.lower() and "aniwatchtv.to" not in url.lower() and not is_animetsu and not is_anikoto:
         # Treat as a search query
         status_msg = await client.send_photo(
             message.chat.id,
@@ -33,7 +34,7 @@ async def handle_url(client: Client, message):
             caption="<blockquote>🔍 <b>ꜱᴇᴀʀᴄʜɪɴɢ ᴀɴɪᴍᴇ, ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b></blockquote>",
             parse_mode=ParseMode.HTML
         )
-        active_source = await db.get_user_setting(0, "active_source", "animetsu")
+        active_source = await db.get_user_setting(0, "active_source", "anikoto")
         results = await asyncio.to_thread(search_anime, url, source=active_source)
         if not results:
             await status_msg.edit_caption("<blockquote>❌ <b>ɴᴏ ᴀɴɪᴍᴇ ғᴏᴜɴᴅ ғᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ.</b>\nᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴠᴀʟɪᴅ ᴜʀʟ ᴏʀ ᴛʀʏ ᴀɴᴏᴛʜᴇʀ ꜱᴇᴀʀᴄʜ.</blockquote>", parse_mode=ParseMode.HTML)
@@ -59,7 +60,7 @@ async def handle_url(client: Client, message):
         )
         return
 
-    is_episode = "ep=" in url or "episode-" in url or (is_animetsu and "/watch/" in url)
+    is_episode = "ep=" in url or "episode-" in url or (is_animetsu and "/watch/" in url) or (is_anikoto and ("/watch/" in url or "ep=" in url))
 
     if is_episode:
         from cantarella.telegram.pages import post_to_main_channel
@@ -83,8 +84,11 @@ async def handle_url(client: Client, message):
 
             await post_to_main_channel(client, url, uploaded_msgs, quality_map)
     else:
-        active_source = await db.get_user_setting(0, "active_source", "animetsu")
-        if is_animetsu:
+        active_source = await db.get_user_setting(0, "active_source", "anikoto")
+        if is_anikoto:
+            from cantarella.scraper.anikoto import AnikotoScraper
+            entries = await asyncio.to_thread(AnikotoScraper().list_episodes, url)
+        elif is_animetsu:
             from cantarella.scraper.animetsu import AnimetsuScraper
             entries = await asyncio.to_thread(AnimetsuScraper().list_episodes, url)
         else:
