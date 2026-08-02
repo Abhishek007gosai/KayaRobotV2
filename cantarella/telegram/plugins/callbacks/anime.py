@@ -24,8 +24,13 @@ async def on_anime_select(client: Client, callback_query):
 
     anime_id = callback_query.data.split("_")[1]
 
-    active_source = await db.get_user_setting(0, "active_source", "animetsu")
-    if active_source == "animetsu":
+    active_source = await db.get_user_setting(0, "active_source", "anikoto")
+    if active_source == "anikoto":
+        url = f"https://anikoto.cz/watch/{anime_id}"
+        from cantarella.scraper.anikoto import AnikotoScraper
+        downloader = AnikotoScraper()
+        entries = await client.loop.run_in_executor(None, downloader.list_episodes, anime_id)
+    elif active_source == "animetsu":
         url = f"https://animetsu.live/anime/{anime_id}"
         from cantarella.scraper.animetsu import AnimetsuScraper
         downloader = AnimetsuScraper()
