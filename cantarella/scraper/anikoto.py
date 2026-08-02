@@ -371,9 +371,13 @@ class AnikotoScraper:
                 percent_match = re.search(r"(\d+(\.\d+)?)%", line)
                 if percent_match:
                     speed_match = re.search(r"(\d+(\.\d+)?\s*[MKG]?i?(B/s|bps))", line, re.I)
+                    size_match = re.search(r"(\d+(\.\d+)?\s*\S+)\s*/\s*(\d+(\.\d+)?\s*\S+)", line, re.I)
                     self.progress_queue.put({
                         "percent": f"{percent_match.group(1)}%",
                         "speed": speed_match.group(1) if speed_match else "0 MB/s",
+                        "downloaded": size_match.group(1) if size_match else "?",
+                        "total": size_match.group(3) if size_match else "?",
+                        "type": "sub",
                         "title": f"Episode {ep_num}",
                     })
         process.wait()
