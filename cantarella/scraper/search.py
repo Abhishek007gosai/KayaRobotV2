@@ -8,7 +8,10 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 }
 
-def search_anime(query, source="aniwatch"):
+def search_anime(query, source="anikoto"):
+    if source == "anikoto":
+        from cantarella.scraper.anikoto import AnikotoScraper
+        return AnikotoScraper().search_anime(query)
     if source == "animetsu":
         from cantarella.scraper.animetsu import AnimetsuScraper
         return AnimetsuScraper().search_anime(query)
