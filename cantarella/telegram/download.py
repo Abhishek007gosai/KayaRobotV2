@@ -86,10 +86,22 @@ async def _handle_download(client: Client, message, url, status_msg, is_playlist
 async def __handle_download_internal(client: Client, message, url, status_msg, is_playlist, quality, chat_id, progress_chat_id, name_override, season_override, ep_num_override, user_chat_id, user_progress_msg):
     progress_q = Queue()
     upload_q = Queue()
-    downloader = cantarellatvDownloader(progress_queue=progress_q)
+
+    # Pick scraper by URL / default to Anikoto (working source)
+    url_l = (url or "").lower()
+    if "anikoto" in url_l:
+        from cantarella.scraper.anikoto import AnikotoScraper
+        downloader = AnikotoScraper(progress_queue=progress_q)
+    elif "animetsu" in url_l:
+        from cantarella.scraper.animetsu import AnimetsuScraper
+        downloader = AnimetsuScraper(progress_queue=progress_q)
+    else:
+        # Default: Anikoto (AniWatch/Animetsu upstreams are largely dead)
+        from cantarella.scraper.anikoto import AnikotoScraper
+        downloader = AnikotoScraper(progress_queue=progress_q)
 
     def download_target():
-        if is_playlist and quality != "all":
+        if is_playlist and quality != "all" and hasattr(downloader, "download_all_episodes"):
             downloader.download_all_episodes(url, quality=quality)
         else:
             downloader.download_episode(url, quality=quality, name_override=name_override, season_override=season_override, ep_num_override=ep_num_override)
